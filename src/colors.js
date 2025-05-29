@@ -1,0 +1,1 @@
+export const lightBrown = 0xf6e6c0;

@@ -1,0 +1,22 @@
+{
+  "name": "guild-game",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.3.1"
+  },
+  "dependencies": {
+    "@pixi/sound": "^6.0.1",
+    "@pixi/ui": "^2.2.3",
+    "@tailwindcss/vite": "^4.1.5",
+    "pixi-filters": "^6.1.2",
+    "pixi.js": "^8.9.2",
+    "tailwindcss": "^4.1.5"
+  }
+}
