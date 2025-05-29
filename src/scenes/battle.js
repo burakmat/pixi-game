@@ -1,6 +1,6 @@
 import { Sprite, Graphics } from "pixi.js";
 import { lightBrown } from "../colors";
-import { createButton } from "../components/Button";
+import { createPixelButton } from "../components/Button";
 import { ColorOverlayFilter } from "pixi-filters";
 import { Scenes } from "../enums";
 import { startScene } from "../SceneManager";
@@ -112,30 +112,26 @@ export function BattleScene(app, { scene, sceneWidth, sceneHeight }) {
     enemies.push(unitBanner);
     scene.addChild(unitBanner);
   });
-  const startButton = createButton(app, {
+  const startButton = createPixelButton(app, {
     labelText: "Start",
-    x: sceneWidth / 2,
-    y: sceneHeight / 2,
-    textureSrc: "blueButton",
-    pressedTextureSrc: "blueButtonPressed",
+    textureSrc: "pixelButton",
+    width: sceneWidth / 8,
     onClick: () => {
       app.ticker.add(prepareAttack);
     },
   });
+  startButton.position.set((sceneWidth - startButton.width) / 2, (sceneHeight - startButton.height) / 2)
   scene.addChild(startButton);
 
-  const backButton = createButton(app, {
+  const backButton = createPixelButton(app, {
     labelText: "Back",
-    x: 50,
-    y: 50,
-    alignCenterX: false,
-    alignCenterY: false,
-    textureSrc: "blueButton",
-    pressedTextureSrc: "blueButtonPressed",
+    textureSrc: "pixelButton",
+    width: sceneWidth / 8,
     onClick: () => {
       startScene(app, { sceneKey: Scenes.MainMenu });
     },
   });
+  backButton.position.set(sceneWidth / 20, sceneHeight / 10)
   scene.addChild(backButton)
   return () => {
     allies.length = 0;

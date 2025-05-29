@@ -1,49 +1,41 @@
-import { Container, Sprite, Texture, Text } from "pixi.js";
+import { Container, Sprite, Texture, Text, Filter } from "pixi.js";
 import { sound } from "@pixi/sound";
+import { ColorOverlayFilter } from "pixi-filters";
 
-export function createButton(
+export function createPixelButton(
   app,
   {
     labelText,
-    x,
-    y,
-    alignCenterX,
-    alignCenterY,
-    textureSrc,
-    pressedTextureSrc,
+    width,
+    height,
     onClick,
     hoverTextureSrc,
     hoverAudioSrc,
     onClickAudioSrc,
   }
 ) {
-  const sprite = Sprite.from(textureSrc);
+  const container = new Container();
+  container.eventMode = "static";
+  container.cursor = "pointer";
+
+  const sprite = Sprite.from("pixelButton");
+  sprite.texture.source.scaleMode = "nearest"
+  if (width) {
+      sprite.setSize(width, width * sprite.height / sprite.width);
+  }
+  container.addChild(sprite);
 
   const label = new Text({
     text: labelText,
-    style: { fill: 0x0 },
-    position: { x: sprite.width / 2, y: sprite.height / 2 - 8 },
+    style: { fill: 0x0, fontSize: 128, fontFamily: "anxel" },
   });
+  label.scale.set(width / 1000)
   label.anchor.set(0.5);
+  label.position.set(container.width / 2, container.height * 4 / 11);
+  container.addChild(label);
 
-  const buttonContainer = new Container();
-  buttonContainer.eventMode = "static";
-  buttonContainer.cursor = "pointer";
-  buttonContainer.addChild(sprite);
-  buttonContainer.addChild(label);
-  if (alignCenterX) {
-    buttonContainer.x = (app.screen.width - buttonContainer.width) / 2 + x;
-  } else {
-    buttonContainer.x = x;
-  }
-  if (alignCenterY) {
-    buttonContainer.y = (app.screen.height - buttonContainer.height) / 2 + y;
-  } else {
-    buttonContainer.y = y;
-  }
-  buttonContainer.on("click", () => {
-    sprite.texture = Texture.from(textureSrc);
-    label.y -= 4;
+  container.on("click", () => {
+    container.filters = []
     if (onClickAudioSrc) {
       sound.play(onClickAudioSrc);
     }
@@ -51,27 +43,25 @@ export function createButton(
       onClick();
     }
   });
-  buttonContainer.on("pointerdown", () => {
-    sprite.texture = Texture.from(pressedTextureSrc);
-    label.y += 4;
+  container.on("pointerdown", () => {
+    container.filters = [new ColorOverlayFilter({color: 0x0, alpha: 0.2})]
   });
-  buttonContainer.on("pointerupoutside", () => {
-    sprite.texture = Texture.from(textureSrc);
-    label.y -= 4;
+  container.on("pointerupoutside", () => {
+    container.filters = []
   });
 
   if (hoverTextureSrc) {
-    buttonContainer.on("mouseenter", () => {
+    container.on("mouseenter", () => {
       sprite.texture = Texture.from(hoverTextureSrc);
     });
-    buttonContainer.on("mouseleave", () => {
+    container.on("mouseleave", () => {
       sprite.texture = Texture.from(textureSrc);
     });
   }
   if (hoverAudioSrc) {
-    buttonContainer.on("mouseenter", () => {
+    container.on("mouseenter", () => {
       sound.play(hoverAudioSrc);
     });
   }
-  return buttonContainer;
+  return container;
 }

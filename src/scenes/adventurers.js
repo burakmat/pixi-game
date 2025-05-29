@@ -1,5 +1,5 @@
 import { Container, Graphics, Sprite, Text } from "pixi.js";
-import { createButton } from "../components/Button";
+import { createPixelButton } from "../components/Button";
 import { ProgressBar } from "@pixi/ui";
 import { startScene } from "../SceneManager";
 import { Scenes } from "../enums";
@@ -12,18 +12,15 @@ export function createAdventurersScene(
   app,
   { scene, sceneWidth, sceneHeight }
 ) {
-  const backButton = createButton(app, {
+  const backButton = createPixelButton(app, {
     labelText: "Back",
-    x: 50,
-    y: 50,
-    alignCenterX: false,
-    alignCenterY: false,
-    textureSrc: "blueButton",
-    pressedTextureSrc: "blueButtonPressed",
+    textureSrc: "pixelButton",
+    width: sceneWidth / 8,
     onClick: () => {
       startScene(app, { sceneKey: Scenes.MainMenu });
     },
   });
+  backButton.position.set(sceneWidth / 20, sceneHeight / 10)
 
   const bg = new Graphics();
 

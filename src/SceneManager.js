@@ -5,7 +5,6 @@ import { createMenuContainer } from "./MenuContainer";
 import createGameContainer from "./GameContainer";
 import { createAdventurerDetailsScene } from "./scenes/adventurerDetails";
 import { createBannersScene } from "./scenes/banners";
-import { Appearance } from "./components/AdventurerDetails/Appearance";
 import { AdventurerList } from "./components/AdventurerDetails/AdventurerList";
 import { BattleScene } from "./scenes/battle";
 
@@ -78,8 +77,6 @@ export function startScene(app, { sceneKey }) {
         break;
       case Scenes.Battle:
         return BattleScene(app, sceneConfig);
-      case Scenes.Development:
-        app.stage.addChild(AdventurerList(app));
       default:
         break;
     }

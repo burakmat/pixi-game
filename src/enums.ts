@@ -4,7 +4,6 @@ export enum Scenes {
     InGame,
     AdventurerDetails,
     Banners,
-    Development,
     Battle
 }
 
