@@ -1,12 +1,9 @@
-import { Container } from "pixi.js";
+import { Container, Graphics } from "pixi.js";
 import { Scenes } from "./enums";
 import { createAdventurersScene } from "./scenes/adventurers";
-import { createMenuContainer } from "./MenuContainer";
-import createGameContainer from "./GameContainer";
-import { createAdventurerDetailsScene } from "./scenes/adventurerDetails";
 import { createBannersScene } from "./scenes/banners";
-import { AdventurerList } from "./components/AdventurerDetails/AdventurerList";
 import { BattleScene } from "./scenes/battle";
+import { MainMenuScene } from "./scenes/mainMenu";
 
 export const SCREEN_RATIO = 16 / 9;
 let sceneWidth;
@@ -62,16 +59,9 @@ export function startScene(app, { sceneKey }) {
   function fillOutSceneContent(app, sceneConfig) {
     switch (sceneKey) {
       case Scenes.MainMenu:
-        createMenuContainer(app, sceneConfig);
-        break;
+        return MainMenuScene(app, sceneConfig);
       case Scenes.Adventurers:
-        createAdventurersScene(app, sceneConfig);
-        break;
-      case Scenes.InGame:
-        createGameContainer(app, sceneConfig);
-        break;
-      case Scenes.AdventurerDetails:
-        return createAdventurerDetailsScene(app, sceneConfig);
+        return createAdventurersScene(app, sceneConfig);
       case Scenes.Banners:
         createBannersScene(app, sceneConfig);
         break;

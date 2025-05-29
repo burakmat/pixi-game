@@ -1,17 +1,51 @@
-import { Container, Graphics, Sprite, Text } from "pixi.js";
 import { createPixelButton } from "../components/Button";
-import { ProgressBar } from "@pixi/ui";
-import { startScene } from "../SceneManager";
 import { Scenes } from "../enums";
-import { createProgressBar } from "../components/ProgressBar";
+import { startScene } from "../SceneManager";
+import {
+  createBookBackground,
+  destroyBookBackground,
+} from "../components/AdventurerDetails/BookBackground";
+import { AdventurerList } from "../components/AdventurerDetails/AdventurerList";
+import { AdventurerStatistics } from "../components/AdventurerDetails/Statistics";
+import { SkillTree } from "../components/AdventurerDetails/SkillTree";
+import { Appearance } from "../components/AdventurerDetails/Appearance";
+import { AdventurerDetailsTabs } from "../enums";
+import { markers } from "../components/AdventurerDetails/BookBackground";
+import { Items } from "../components/AdventurerDetails/Items";
 
-const CLASSES = ["Warrior", "Mage", "Rogue", "Cleric"];
-const RACES = ["Human", "Elf", "Dwarf", "Orc"];
+const bookAspectRatio = 7 / 5;
+
+const adventurers = [
+  {
+    avatarSrc: "adventurer",
+  },
+  {
+    avatarSrc: "adventurer2",
+  },
+];
+
+const tabs = [];
 
 export function createAdventurersScene(
   app,
   { scene, sceneWidth, sceneHeight }
 ) {
+  let activeAdventurer;
+  let appearance;
+
+  let activeTab = AdventurerDetailsTabs.Statistics;
+  function setActiveTab(newTab) {
+    if (activeTab !== undefined) {
+      markers[activeTab].y = -3;
+      markers[activeTab].mask.y = -7;
+      scene.removeChild(tabs[activeTab]);
+    }
+    activeTab = newTab;
+    markers[activeTab].y = -5;
+    markers[activeTab].mask.y = -5;
+    scene.addChild(tabs[newTab]);
+  }
+
   const backButton = createPixelButton(app, {
     labelText: "Back",
     textureSrc: "pixelButton",
@@ -22,147 +56,86 @@ export function createAdventurersScene(
   });
   backButton.position.set(sceneWidth / 20, sceneHeight / 10)
 
-  const bg = new Graphics();
 
-  const gridWidth = sceneWidth / 4;
-  const gridHeight = sceneHeight / 6;
-  bg.rect(0, 0, sceneWidth, sceneHeight);
-  bg.fill(0xca9863);
-
-  bg.rect(0, 0, sceneWidth, gridHeight);
-  bg.fill(0x7c4e38);
-
-  let avatar;
-  scene.addChild(bg);
-  scene.addChild(backButton);
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 5; j++) {
-      bg.rect(
-        i * gridWidth,
-        gridHeight + j * gridHeight,
-        gridWidth,
-        gridHeight
+  function setActiveAdventurer(newId) {
+    if (newId !== activeAdventurer) {
+      if (activeAdventurer !== undefined) {
+        scene.removeChild(appearance);
+        appearance.destroy();
+      }
+      activeAdventurer = newId;
+      appearance = Appearance(app, {
+        renderWidth: Math.floor(sceneHeight / 2),
+        renderHeight: Math.floor((sceneHeight * 6) / 10),
+        spriteSrc: adventurers[activeAdventurer].avatarSrc,
+      });
+      appearance.position.set(
+        sceneWidth - bookBackground.width + (bookBackground.width * 54) / 100,
+        Math.floor(bookBackground.y + (bookBackground.height * 22) / 160)
       );
-      bg.stroke({ color: 0, width: 4 });
-      avatar = 0.5 > Math.random() ? Sprite.from("lule") : Sprite.from("sade");
-      const mask = new Graphics();
-      mask
-        .rect(
-          0,
-          0,
-          j % 2 == 0 ? gridWidth / 6 : gridWidth / 3,
-          (gridHeight * 4) / 5
-        )
-        .fill();
-      mask.x = i * gridWidth + 10;
-      mask.y = gridHeight + j * gridHeight + 10;
-      avatar.width = gridWidth / 3;
-      avatar.height = (gridHeight * 4) / 5;
-      avatar.x = i * gridWidth + 10;
-      avatar.y = gridHeight + j * gridHeight + 10;
-    //   avatar.mask = mask;
-      scene.addChild(avatar);
-    //   scene.addChild(mask);
-      const name = new Text({
-        text: "Adventurer " + (i * 5 + j + 1),
-        style: {
-          fontSize: 20,
-          fill: 0x000000,
-          fontFamily: "anxel",
-        },
-      });
-      name.anchor.set(0.5);
-      name.x = i * gridWidth + gridWidth / 2;
-      name.y = gridHeight + j * gridHeight + 20;
-      scene.addChild(name);
-      const classText = new Text({
-        text: "Class: " + CLASSES[Math.floor(Math.random() * CLASSES.length)],
-        style: {
-          fontSize: 20,
-          fill: 0x000000,
-          fontFamily: "anxel",
-        },
-      });
-      classText.x = (i + 1) * gridWidth - (10 + classText.width);
-      classText.y = gridHeight + j * gridHeight + 20;
-      scene.addChild(classText);
-      const raceText = new Text({
-        text: "Race: " + RACES[Math.floor(Math.random() * RACES.length)],
-        style: {
-          fontSize: 20,
-          fill: 0x000000,
-          fontFamily: "anxel",
-        },
-      });
-      raceText.x = (i + 1) * gridWidth - (10 + raceText.width);
-      raceText.y = gridHeight + j * gridHeight + 45;
-      scene.addChild(raceText);
 
-      const stats = new Text({
-        text: "Strength: " + Math.floor(Math.random() * 100 + 1),
-        style: {
-          fontSize: 20,
-          fill: 0x000000,
-          fontFamily: "anxel",
-        },
-      });
-      stats.x = i * gridWidth + gridWidth / 3 + 20;
-      stats.y = gridHeight + j * gridHeight + 40;
-      scene.addChild(stats);
-      const stats2 = new Text({
-        text: "Dexterity: " + Math.floor(Math.random() * 100 + 1),
-        style: {
-          fontSize: 20,
-          fill: 0x000000,
-          fontFamily: "anxel",
-        },
-      });
-      stats2.x = i * gridWidth + gridWidth / 3 + 20;
-      stats2.y = gridHeight + j * gridHeight + 70;
-      scene.addChild(stats2);
-      const stats3 = new Text({
-        text: "Intelligence: " + Math.floor(Math.random() * 100 + 1),
-        style: {
-          fontSize: 20,
-          fill: 0x000000,
-          fontFamily: "anxel",
-        },
-      });
-      stats3.x = i * gridWidth + gridWidth / 3 + 20;
-      stats3.y = gridHeight + j * gridHeight + 100;
-      scene.addChild(stats3);
-      const stats4 = new Text({
-        text: "Faith: " + Math.floor(Math.random() * 100 + 1),
-        style: {
-          fontSize: 20,
-          fill: 0x000000,
-          fontFamily: "anxel",
-        },
-      });
-      stats4.x = i * gridWidth + gridWidth / 3 + 20;
-      stats4.y = gridHeight + j * gridHeight + 130;
-      scene.addChild(stats4);
-
-      const level = createProgressBar(app, {
-        barSrc: "bar",
-        fillSrc: "fill",
-        progress: Math.floor(Math.random() * 100 + 1),
-      });
-      level.width = gridWidth / 3;
-      level.height = 10;
-      level.x = i * gridWidth + 10;
-      level.y = gridHeight + j * gridHeight + gridHeight - 20;
-      scene.addChild(level);
-      const corruption = createProgressBar(app, {
-        barSrc: "bar",
-        fillSrc: "fill",
-        progress: Math.floor(Math.random() * 100 + 1),
-      });
-      corruption.width = gridWidth / 3;
-      corruption.height = 10;
-      corruption.x = (i + 1) * gridWidth - (10 + corruption.width);
-      corruption.y = gridHeight + j * gridHeight + gridHeight - 20;
-      scene.addChild(corruption);
+      scene.addChild(appearance);
     }
   }
+
+  const adventurerList = AdventurerList(app, {
+    renderWidth: sceneWidth / 4,
+    renderHeight: (sceneWidth * 7) / 16,
+    setActiveAdventurer,
+  });
+  adventurerList.position.set(sceneWidth / 40, sceneHeight / 8);
+  scene.addChild(adventurerList);
+
+  const bookBackground = createBookBackground(
+    app,
+    {
+      renderWidth: ((sceneHeight * 9) / 10) * bookAspectRatio,
+      renderHeight: (sceneHeight * 9) / 10,
+    },
+    setActiveTab
+  );
+  bookBackground.position.set(
+    sceneWidth - bookBackground.width,
+    (sceneHeight - bookBackground.height) / 2
+  );
+  scene.addChild(bookBackground);
+
+  const statistics = AdventurerStatistics(app, {
+    renderWidth: Math.floor(sceneHeight / 2),
+    renderHeight: Math.floor((sceneHeight * 6) / 10),
+  });
+  tabs.push(statistics);
+  statistics.position.set(
+    sceneWidth - bookBackground.width + (bookBackground.width * 7) / 100,
+    bookBackground.y + (bookBackground.height * 14) / 100
+  );
+
+  const skillTree = SkillTree(app, {
+    renderWidth: Math.floor(sceneHeight / 2),
+    renderHeight: Math.floor((sceneHeight * 6) / 10),
+  });
+  tabs.push(skillTree);
+  skillTree.position.set(
+    sceneWidth - bookBackground.width + (bookBackground.width * 7) / 100,
+    Math.floor(bookBackground.y + (bookBackground.height * 14) / 100)
+  );
+
+  const items = Items(app, {
+    renderWidth: Math.floor(sceneHeight / 2),
+    renderHeigth: Math.floor((sceneHeight * 6) / 10),
+  });
+  tabs.push(items);
+  items.position.set(
+    sceneWidth - bookBackground.width + (bookBackground.width * 7) / 100,
+    bookBackground.y + (bookBackground.height * 14) / 100
+  );
+
+  setActiveTab(AdventurerDetailsTabs.Statistics);
+  setActiveAdventurer(0);
+
+  scene.addChild(backButton);
+  return () => {
+    tabs.length = 0;
+    destroyBookBackground();
+  };
 }

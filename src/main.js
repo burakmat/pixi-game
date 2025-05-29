@@ -12,14 +12,6 @@ document.body.appendChild(app.canvas);
 
 async function preload() {
   const assets = [
-    { alias: "blueButton", src: "/Buttons/Button_Blue_3Slides.png" },
-    {
-      alias: "blueButtonPressed",
-      src: "/Buttons/Button_Blue_3Slides_Pressed.png",
-    },
-    { alias: "yellowButton", src: "/Buttons/Button_Hover_3Slides.png" },
-    { alias: "yellowPannel", src: "/Buttons/Button_Hover_9Slides.png" },
-    { alias: "redLittleButton", src: "/Buttons/Button_Red.png" },
     { alias: "bing", src: "sfx/001_Hover_01.wav" },
     { alias: "start", src: "sfx/089_Pause_01.wav" },
     { alias: "avatar", src: "avatar.png" },

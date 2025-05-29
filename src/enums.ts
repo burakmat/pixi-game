@@ -1,8 +1,6 @@
 export enum Scenes {
     MainMenu,
     Adventurers,
-    InGame,
-    AdventurerDetails,
     Banners,
     Battle
 }
