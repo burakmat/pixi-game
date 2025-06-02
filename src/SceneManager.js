@@ -6,6 +6,7 @@ import { BattleScene } from "./scenes/battle";
 import { MainMenuScene } from "./scenes/mainMenu";
 
 export const SCREEN_RATIO = 16 / 9;
+const highlightMasks = []
 let sceneWidth;
 let sceneHeight;
 let activeScene;
@@ -53,6 +54,10 @@ export function startScene(app, { sceneKey }) {
       sceneHeight,
     });
     app.stage.addChild(scene);
+    if (highlightMasks.length) {
+        addHighlightMask(app, highlightMasks[0])
+        highlightMasks.length = 0
+    }
     activeScene = { scene, sceneKey, cleaner };
   }
 
@@ -83,9 +88,33 @@ export function rerenderActiveScene(app) {
   activeScene = undefined;
   startScene(app, { sceneKey });
 }
+
 function destroyActiveScene() {
   if (activeScene) {
     app.stage.removeChild(activeScene.scene);
     activeScene.scene.destroy({ children: true });
   }
+}
+
+function addHighlightMask(app, targetContainer) {
+  const padding = app.screen.width / 80;
+  const containerPoint = targetContainer.getGlobalPosition();
+  const targetX = containerPoint.x - (targetContainer.anchor ? targetContainer.anchor.x : 0) * targetContainer.width - padding / 2;
+  const targetY = containerPoint.y - (targetContainer.anchor ? targetContainer.anchor.y : 0) * targetContainer.height - padding / 2;
+  const cover = new Graphics();
+  cover
+    .rect(0, 0, app.screen.width, app.screen.height)
+    .fill(0x000000).alpha = 0.8;
+  const inverseMask = new Graphics();
+  inverseMask.rect(0, 0, targetContainer.width + padding, targetContainer.height + padding).fill();
+  inverseMask.position.set(targetX, targetY);
+  cover.setMask({ mask: inverseMask, inverse: true });
+  cover.zIndex = 1;
+  inverseMask.zIndex = 1;
+  app.stage.addChild(cover);
+  app.stage.addChild(inverseMask);
+}
+
+export function queueHighlightMask(targetContainer) {
+    highlightMasks.push(targetContainer)
 }
