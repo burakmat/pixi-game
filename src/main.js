@@ -60,6 +60,8 @@ async function preload() {
       alias: "pixelButton",
       src: "/UI_Assets/03_NoteBook/Sprites/UI_NoteBook_Button01a.png",
     },
+    { alias: "questBoard", src: "/quest_board.png" },
+    { alias: "questPaper", src: "/quest_paper.png" },
   ];
   await Assets.load(assets);
 }

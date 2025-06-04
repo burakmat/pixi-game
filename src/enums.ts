@@ -1,12 +1,17 @@
 export enum Scenes {
-    MainMenu,
-    Adventurers,
-    Banners,
-    Battle
+  MainMenu,
+  Adventurers,
+  Banners,
+  Battle,
+  Quests,
+}
+
+export enum PopupWindows {
+  SimpleInfo,
 }
 
 export enum AdventurerDetailsTabs {
-    Statistics,
-    SkillTree,
-    Items
+  Statistics,
+  SkillTree,
+  Items,
 }

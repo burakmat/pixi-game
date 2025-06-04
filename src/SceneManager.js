@@ -1,15 +1,18 @@
 import { Container, Graphics } from "pixi.js";
-import { Scenes } from "./enums";
+import { PopupWindows, Scenes } from "./enums";
 import { createAdventurersScene } from "./scenes/adventurers";
 import { createBannersScene } from "./scenes/banners";
 import { BattleScene } from "./scenes/battle";
 import { MainMenuScene } from "./scenes/mainMenu";
+import { Quests } from "./scenes/quests";
+import { PopupWindow } from "./components/Popup";
 
 export const SCREEN_RATIO = 16 / 9;
-const highlightMasks = []
+const highlightMasks = [];
 let sceneWidth;
 let sceneHeight;
 let activeScene;
+let activePopup;
 
 export function setSceneDimensions(app) {
   if (app.screen.width / app.screen.height > SCREEN_RATIO) {
@@ -55,8 +58,8 @@ export function startScene(app, { sceneKey }) {
     });
     app.stage.addChild(scene);
     if (highlightMasks.length) {
-        addHighlightMask(app, highlightMasks[0])
-        highlightMasks.length = 0
+      addHighlightMask(app, highlightMasks[0]);
+      highlightMasks.length = 0;
     }
     activeScene = { scene, sceneKey, cleaner };
   }
@@ -72,6 +75,8 @@ export function startScene(app, { sceneKey }) {
         break;
       case Scenes.Battle:
         return BattleScene(app, sceneConfig);
+      case Scenes.Quests:
+        return Quests(app, sceneConfig);
       default:
         break;
     }
@@ -87,6 +92,12 @@ export function rerenderActiveScene(app) {
   }
   activeScene = undefined;
   startScene(app, { sceneKey });
+
+  if (activePopup) {
+    app.stage.removeChild(activePopup.popup);
+    activePopup.popup.destroy({ children: true });
+    startPopupWindow(app, activePopup.key)
+  }
 }
 
 function destroyActiveScene() {
@@ -99,14 +110,29 @@ function destroyActiveScene() {
 function addHighlightMask(app, targetContainer) {
   const padding = app.screen.width / 80;
   const containerPoint = targetContainer.getGlobalPosition();
-  const targetX = containerPoint.x - (targetContainer.anchor ? targetContainer.anchor.x : 0) * targetContainer.width - padding / 2;
-  const targetY = containerPoint.y - (targetContainer.anchor ? targetContainer.anchor.y : 0) * targetContainer.height - padding / 2;
+  const targetX =
+    containerPoint.x -
+    (targetContainer.anchor ? targetContainer.anchor.x : 0) *
+      targetContainer.width -
+    padding / 2;
+  const targetY =
+    containerPoint.y -
+    (targetContainer.anchor ? targetContainer.anchor.y : 0) *
+      targetContainer.height -
+    padding / 2;
   const cover = new Graphics();
   cover
     .rect(0, 0, app.screen.width, app.screen.height)
     .fill(0x000000).alpha = 0.8;
   const inverseMask = new Graphics();
-  inverseMask.rect(0, 0, targetContainer.width + padding, targetContainer.height + padding).fill();
+  inverseMask
+    .rect(
+      0,
+      0,
+      targetContainer.width + padding,
+      targetContainer.height + padding
+    )
+    .fill();
   inverseMask.position.set(targetX, targetY);
   cover.setMask({ mask: inverseMask, inverse: true });
   cover.zIndex = 1;
@@ -116,5 +142,23 @@ function addHighlightMask(app, targetContainer) {
 }
 
 export function queueHighlightMask(targetContainer) {
-    highlightMasks.push(targetContainer)
+  highlightMasks.push(targetContainer);
+}
+
+export function startPopupWindow(app, key) {
+  const popupLayer = PopupWindow(
+    app,
+    { sceneWidth, sceneHeight },
+    {
+      key,
+      closeOnClickOutside: true,
+      onCloseHandler: () => {
+        app.stage.removeChild(popupLayer);
+        popupLayer.destroy({ children: true });
+        activePopup = undefined
+      },
+    }
+  );
+  app.stage.addChild(popupLayer);
+  activePopup = { key, popup: popupLayer }
 }
