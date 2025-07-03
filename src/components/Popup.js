@@ -5,8 +5,8 @@ export function PopupWindow(app, { sceneWidth, sceneHeight }, { key, closeOnClic
   const container = new Container();
 
   const blocker = new Graphics();
-  blocker.rect(0, 0, app.screen.width, app.screen.height).fill("transparent");
-//   blocker.alpha = 0.7
+  blocker.rect(0, 0, app.screen.width, app.screen.height).fill("black");
+  blocker.alpha = 0.7
   blocker.eventMode = "static";
   if (closeOnClickOutside) {
     blocker.on("click", onCloseHandler)

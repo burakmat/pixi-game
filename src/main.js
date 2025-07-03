@@ -62,6 +62,7 @@ async function preload() {
     },
     { alias: "questBoard", src: "/quest_board.png" },
     { alias: "questPaper", src: "/quest_paper.png" },
+    { alias: "stun", src: "/stun.png" },
   ];
   await Assets.load(assets);
 }

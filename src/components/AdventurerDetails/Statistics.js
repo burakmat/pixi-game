@@ -1,5 +1,5 @@
 import { Graphics, Text, Texture, Container, Sprite } from "pixi.js";
-import { createProgressBar } from "../ProgressBar";
+import { createPixelProgressBar } from "../ProgressBar";
 
 
 export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
@@ -128,7 +128,7 @@ export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
   });
   corruptionText.scale.set(0.3 * scaleMultiplier);
   corruptionText.position.set(renderWidth * 1 / 10, renderHeight * 13 / 18);
-  const corruptionBar = createProgressBar(app, {
+  const corruptionBar = createPixelProgressBar(app, {
     barSrc: "bar",
     fillSrc: "fill",
     progress: 2,
@@ -146,7 +146,7 @@ export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
   });
   loyaltyText.scale.set(0.3 * scaleMultiplier);
   loyaltyText.position.set(renderWidth * 1 / 10, renderHeight * 15 / 18);
-  const loyaltyBar = createProgressBar(app, {
+  const loyaltyBar = createPixelProgressBar(app, {
     barSrc: "bar",
     fillSrc: "fill",
     progress: 60,
