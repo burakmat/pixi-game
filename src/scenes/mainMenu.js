@@ -1,7 +1,8 @@
 import { Graphics, Text } from "pixi.js";
 import { createPixelButton } from "../components/Button.js";
-import { startPopupWindow, startScene } from "../SceneManager.js";
+import { startEventWindow, startScene } from "../SceneManager.js";
 import { PopupWindows, Scenes } from "../enums.js";
+import gameStore from "../../../guild-react/src/store/gameStore";
 
 export function MainMenuScene(app, { scene, sceneWidth, sceneHeight }) {
   const text = new Text({
@@ -19,7 +20,6 @@ export function MainMenuScene(app, { scene, sceneWidth, sceneHeight }) {
   const adventurerButton = createPixelButton(app, {
     labelText: "Adventurers",
     width: sceneWidth / 8,
-    height: sceneHeight / 10,
     onClick: () => {
       startScene(app, { sceneKey: Scenes.Adventurers });
     },
@@ -51,8 +51,8 @@ export function MainMenuScene(app, { scene, sceneWidth, sceneHeight }) {
     },
   });
   bannersButton.position.set(
-    (sceneWidth - bannersButton.width) / 2,
-    (sceneHeight * 90) / 100
+    sceneWidth / 2 - 2 * bannersButton.width,
+    (sceneHeight * 80) / 100
   );
 
   const questsButton = createPixelButton(app, {
@@ -67,21 +67,24 @@ export function MainMenuScene(app, { scene, sceneWidth, sceneHeight }) {
     (sceneHeight * 70) / 100
   );
 
-  const popupToggleButton = createPixelButton(app, {
-    labelText: "Toggle Popup",
+  const triggerEventButton = createPixelButton(app, {
+    labelText: "Trigger Event",
     width: sceneWidth / 8,
     onClick: () => {
-      startPopupWindow(app, PopupWindows.SimpleInfo);
-    },
+      const event = gameStore.frCurrentEvent();
+      console.log(event);
+      startEventWindow(app, event.type, event.event);
+      // startPopupWindow(app, gameStore.activeEvent);
+    }
   });
-  popupToggleButton.position.set(
-    sceneWidth / 2 + popupToggleButton.width,
-    (sceneHeight * 80) / 100
+  triggerEventButton.position.set(
+    sceneWidth / 2 - 2 * triggerEventButton.width,
+    sceneHeight * 70 / 100
   );
 
   scene.addChild(adventurerButton);
   scene.addChild(battleButton);
   scene.addChild(bannersButton);
   scene.addChild(questsButton);
-  scene.addChild(popupToggleButton);
+  scene.addChild(triggerEventButton);
 }

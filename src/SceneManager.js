@@ -5,7 +5,7 @@ import { createBannersScene } from "./scenes/banners";
 import { BattleScene } from "./scenes/battle";
 import { MainMenuScene } from "./scenes/mainMenu";
 import { Quests } from "./scenes/quests";
-import { PopupWindow } from "./components/Popup";
+import { DialogueWindow, PopupWindow } from "./components/Popup";
 
 export const SCREEN_RATIO = 16 / 9;
 const highlightMasks = [];
@@ -95,8 +95,11 @@ export function rerenderActiveScene(app) {
 
   if (activePopup) {
     app.stage.removeChild(activePopup.popup);
+    if (activePopup.cleaner) {
+      activePopup.cleaner();
+    }
     activePopup.popup.destroy({ children: true });
-    startPopupWindow(app, activePopup.key)
+    startEventWindow(app, activePopup.type, activePopup.config);
   }
 }
 
@@ -145,20 +148,37 @@ export function queueHighlightMask(targetContainer) {
   highlightMasks.push(targetContainer);
 }
 
-export function startPopupWindow(app, key) {
-  const popupLayer = PopupWindow(
-    app,
-    { sceneWidth, sceneHeight },
-    {
-      key,
-      closeOnClickOutside: true,
-      onCloseHandler: () => {
+export function startEventWindow(app, eventType, eventConfig) {
+  let popupLayer;
+  let cleaner;
+  if (eventType === "Event") {
+    [popupLayer, cleaner] = PopupWindow(
+      app,
+      { sceneWidth, sceneHeight },
+      {
+        closeOnClickOutside: true,
+        onCloseHandler: () => {
+          app.stage.removeChild(popupLayer);
+          popupLayer.destroy({ children: true });
+          activePopup = undefined
+        },
+      },
+      eventConfig
+    );
+  } else if (eventType === "Dialogue") {
+    [popupLayer, cleaner] = DialogueWindow(
+      app,
+      { sceneWidth, sceneHeight },
+      eventConfig,
+      () => {
         app.stage.removeChild(popupLayer);
         popupLayer.destroy({ children: true });
         activePopup = undefined
-      },
-    }
-  );
+      }
+    );
+  } else {
+    return ;
+  }
   app.stage.addChild(popupLayer);
-  activePopup = { key, popup: popupLayer }
+  activePopup = { popup: popupLayer, type: eventType, config: eventConfig, cleaner: cleaner }
 }

@@ -63,6 +63,9 @@ async function preload() {
     { alias: "questBoard", src: "/quest_board.png" },
     { alias: "questPaper", src: "/quest_paper.png" },
     { alias: "stun", src: "/stun.png" },
+    { alias: "Goblin1", src: "/Goblin1.png" },
+    { alias: "dialogue1", src: "/dialogue1.png" },
+    { alias: "dialogue2", src: "/dialogue2.png" },
   ];
   await Assets.load(assets);
 }
