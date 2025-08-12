@@ -1,6 +1,6 @@
 export enum Scenes {
   MainMenu,
-  Adventurers,
+  Lobby,
   Banners,
   Battle,
   Quests,
@@ -14,4 +14,9 @@ export enum AdventurerDetailsTabs {
   Statistics,
   SkillTree,
   Items,
+}
+
+export enum AdventurerListMode {
+  Inventory,
+  Market
 }

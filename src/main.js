@@ -12,49 +12,57 @@ document.body.appendChild(app.canvas);
 
 async function preload() {
   const assets = [
-    { alias: "bing", src: "sfx/001_Hover_01.wav" },
-    { alias: "start", src: "sfx/089_Pause_01.wav" },
-    { alias: "avatar", src: "avatar.png" },
-    { alias: "lule", src: "lule.avif" },
-    { alias: "sade", src: "sade.avif" },
-    { alias: "anxel", src: "UI_Assets/Fonts/Anxel.ttf" },
+    { alias: "bing", src: "/sfx/001_Hover_01.wav" },
+    { alias: "start", src: "/sfx/089_Pause_01.wav" },
+    { alias: "avatar", src: "/avatar.png" },
+    { alias: "lule", src: "/lule.avif" },
+    { alias: "sade", src: "/sade.avif" },
+    { alias: "anxel", src: "/UI_Assets/Fonts/Anxel.ttf" },
     {
       alias: "bar",
-      src: "UI_Assets/01_TravelBook/Sprites/UI_TravelBook_Bar01a.png",
+      src: "/UI_Assets/01_TravelBook/Sprites/UI_TravelBook_Bar01a.png",
     },
     {
       alias: "fill",
-      src: "UI_Assets/01_TravelBook/Sprites/UI_TravelBook_Fill01a.png",
+      src: "/UI_Assets/01_TravelBook/Sprites/UI_TravelBook_Fill01a.png",
     },
     {
       alias: "bookCover",
-      src: "UI_Assets/01_TravelBook/Sprites/UI_TravelBook_BookCover01a.png",
+      src: "/UI_Assets/01_TravelBook/Sprites/UI_TravelBook_BookCover01a.png",
     },
     {
       alias: "bookPageLeft",
-      src: "UI_Assets/01_TravelBook/Sprites/UI_TravelBook_BookPageLeft01a.png",
+      src: "/UI_Assets/01_TravelBook/Sprites/UI_TravelBook_BookPageLeft01a.png",
     },
     {
       alias: "bookPageRight",
-      src: "UI_Assets/01_TravelBook/Sprites/UI_TravelBook_BookPageRight01a.png",
+      src: "/UI_Assets/01_TravelBook/Sprites/UI_TravelBook_BookPageRight01a.png",
     },
-    { alias: "adventurer", src: "adventurer.png" },
-    { alias: "adventurer2", src: "adventurer2.png" },
+    { alias: "adventurer", src: "/adventurer.png" },
+    { alias: "adventurer2", src: "/adventurer2.png" },
     {
       alias: "itemSlot",
-      src: "UI_Assets/01_TravelBook/Sprites/UI_TravelBook_Slot01a.png",
+      src: "/UI_Assets/01_TravelBook/Sprites/UI_TravelBook_Slot01a.png",
     },
     {
       alias: "coin",
-      src: "UI_Assets/01_TravelBook/Sprites/UI_TravelBook_IconCoin01a.png",
+      src: "/UI_Assets/01_TravelBook/Sprites/UI_TravelBook_IconCoin01a.png",
     },
     {
       alias: "marker",
-      src: "UI_Assets/01_TravelBook/Sprites/UI_TravelBook_Marker01a.png",
+      src: "/UI_Assets/01_TravelBook/Sprites/UI_TravelBook_Marker01a.png",
     },
-    { alias: "fireplace", src: "fireplace.png" },
-    { alias: "banner", src: "banner.png" },
-    { alias: "skillTree", src: "skill_tree.png" },
+    {
+      alias: "marker2a",
+      src: "/UI_Assets/03_NoteBook/Sprites/UI_NoteBook_Marker01a.png"
+    },
+    {
+      alias: "marker2b",
+      src: "/UI_Assets/03_NoteBook/Sprites/UI_NoteBook_Marker01b.png"
+    },
+    { alias: "fireplace", src: "/fireplace.png" },
+    { alias: "banner", src: "/banner.png" },
+    { alias: "skillTree", src: "/skill_tree.png" },
     { alias: "battleground", src: "/battleground.png" },
     {
       alias: "pixelButton",
@@ -66,6 +74,9 @@ async function preload() {
     { alias: "Goblin1", src: "/Goblin1.png" },
     { alias: "dialogue1", src: "/dialogue1.png" },
     { alias: "dialogue2", src: "/dialogue2.png" },
+    { alias: "lobby", src: "/lobby.jpeg" },
+    { alias: "character", src: "/character-nobg.png" },
+    { alias: "downArrow", src: "/UI_Assets/01_TravelBook/Sprites/UI_TravelBook_HandleDropdown02a.png" }
   ];
   await Assets.load(assets);
 }

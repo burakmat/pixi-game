@@ -58,7 +58,12 @@ export function PopupWindow(app, { sceneWidth, sceneHeight }, { closeOnClickOuts
     const choiceButton = createPixelButton(app, {
       labelText: choice.text,
       width: window.width * 2 / 10,
-      onClick: choice.action,
+      onClick: () => {
+        if (choice.action) {
+          choice.action();
+        }
+        onCloseHandler();
+      },
     });
     
     choiceButton.position.set((idx + 1) * (window.width - choices.length * choiceButton.width) / (choices.length + 1) + choiceButton.width * idx, window.height * 85 / 100);
@@ -153,6 +158,7 @@ export function DialogueWindow(app, { sceneWidth, sceneHeight }, { left, right, 
   blocker.rect(0, 0, app.screen.width, app.screen.height).fill("black");
   blocker.alpha = 0.7;
   blocker.eventMode = "static";
+  blocker.cursor = "pointer";
   blocker.on("click", updateDialogue);
   container.addChild(blocker);
 

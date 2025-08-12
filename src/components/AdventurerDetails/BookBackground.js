@@ -4,11 +4,10 @@ const MARKER_POSITIONS = [
   [17, -3],
   [36, -3],
   [55, -3],
-  [74, -3],
 ];
 export const markers = [];
 
-export function createBookBackground(app, {renderWidth, renderHeight}, setActiveTab) {
+export function createBookBackground({renderWidth, renderHeight}, setActiveTab) {
   //, { adventurerIdentifier }
   const container = new Container();
 
@@ -46,8 +45,6 @@ export function createBookBackground(app, {renderWidth, renderHeight}, setActive
     container.addChild(marker);
     container.addChild(marker.mask);
   }
-
-
 
 
   container.setSize(renderWidth, renderHeight)

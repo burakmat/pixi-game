@@ -2,14 +2,29 @@ import { Graphics, Text, Texture, Container, Sprite } from "pixi.js";
 import { createPixelProgressBar } from "../ProgressBar";
 
 
-export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
+export function AdventurerStatistics(app, {renderWidth, renderHeight}, 
+  {
+    name,
+    status,
+    _class,
+    race,
+    str,
+    int,
+    dex,
+    fth,
+    cost,
+    wage,
+    corruption,
+    loyalty
+  }
+) {
     const scaleMultiplier = renderWidth / 650
   const container = new Container();
   const infoBg = new Graphics();
   infoBg.rect(0, 0, renderWidth, renderHeight).fill(0xf6e6c0);
 
   const nameText = new Text({
-    text: "Ozuman Yalakin",
+    text: name,
     style: {
       fontFamily: "anxel",
       fill: 0xae8486,
@@ -20,7 +35,7 @@ export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
   nameText.position.set(renderWidth * 1 / 10, renderHeight * 2 / 18);
 
   const statusText = new Text({
-    text: "Idle",
+    text: status,
     style: {
       fontFamily: "anxel",
       fill: 0xa37229,
@@ -32,7 +47,7 @@ export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
 
 
   const classText = new Text({
-    text: "Rogue",
+    text: _class,
     style: {
       fontFamily: "anxel",
       fill: 0x412a2b,
@@ -43,7 +58,7 @@ export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
   classText.position.set(renderWidth * 1 / 10, renderHeight * 6 / 18);
 
   const raceText = new Text({
-    text: "Human",
+    text: race,
     style: {
       fontFamily: "anxel",
       fill: 0x412a2b,
@@ -54,7 +69,7 @@ export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
   raceText.position.set(renderWidth * 1 / 10, renderHeight * 7 / 18);
 
   const strenghtText = new Text({
-    text: "Strength: 1",
+    text: `Strength: ${str}`,
     style: {
       fontFamily: "anxel",
       fill: 0xa3292f,
@@ -66,7 +81,7 @@ export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
   strenghtText.position.set(renderWidth * 9 / 10, renderHeight * 5 / 18);
 
   const intelligenceText = new Text({
-    text: "Intelligence: 000",
+    text: `Intelligence: ${int}`,
     style: {
       fontFamily: "anxel",
       fill: 0x1f79ad,
@@ -78,7 +93,7 @@ export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
   intelligenceText.position.set(renderWidth * 9 / 10, renderHeight * 6 / 18);
 
   const dexterityText = new Text({
-    text: "Dexterity: 13",
+    text: `Dexterity: ${dex}`,
     style: {
       fontFamily: "anxel",
       fill: 0x5d1fad,
@@ -90,7 +105,7 @@ export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
   dexterityText.position.set(renderWidth * 9 / 10, renderHeight * 7 / 18);
 
   const faithText = new Text({
-    text: "Faith: 1",
+    text: `Faith: ${fth}`,
     style: {
       fontFamily: "anxel",
       fill: 0xa4ad1f,
@@ -107,7 +122,7 @@ export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
   coinSprite.scale.set(4 * scaleMultiplier);
   coinSprite.position.set(renderWidth * 1 / 10, renderHeight * 10 / 18);
   const coinText = new Text({
-    text: "Cost: 500        Wage: 10",
+    text: `Cost: ${cost}        Wage: ${wage}`,
     style: {
       fontFamily: "anxel",
       fill: 0x412a2b,
@@ -131,7 +146,7 @@ export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
   const corruptionBar = createPixelProgressBar(app, {
     barSrc: "bar",
     fillSrc: "fill",
-    progress: 2,
+    progress: corruption,
   });
   corruptionBar.scale.set(4 * scaleMultiplier);
   corruptionBar.position.set(renderWidth * 5 / 10, renderHeight * 13.3 / 18);
@@ -149,7 +164,7 @@ export function AdventurerStatistics(app, {renderWidth, renderHeight}) {
   const loyaltyBar = createPixelProgressBar(app, {
     barSrc: "bar",
     fillSrc: "fill",
-    progress: 60,
+    progress: loyalty,
   });
     loyaltyBar.scale.set(4 * scaleMultiplier);
   loyaltyBar.position.set(renderWidth * 5 / 10, renderHeight * 15.3 / 18);

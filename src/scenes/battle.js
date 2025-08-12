@@ -335,10 +335,11 @@ export function BattleScene(app, { scene, sceneWidth, sceneHeight }) {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
-      startScene(app, { sceneKey: Scenes.MainMenu });
+      startScene(app, { sceneKey: Scenes.Lobby });
     },
   });
   backButton.position.set(sceneWidth / 20, sceneHeight / 10)
+
   scene.addChild(backButton)
   return () => {
     allies.length = 0;

@@ -1,11 +1,12 @@
 import { Container, Graphics } from "pixi.js";
 import { PopupWindows, Scenes } from "./enums";
-import { createAdventurersScene } from "./scenes/adventurers";
+import { AdventurerWindow } from "./components/AdventurerWindow";
 import { createBannersScene } from "./scenes/banners";
 import { BattleScene } from "./scenes/battle";
 import { MainMenuScene } from "./scenes/mainMenu";
 import { Quests } from "./scenes/quests";
 import { DialogueWindow, PopupWindow } from "./components/Popup";
+import { LobbyScene } from "./scenes/lobby";
 
 export const SCREEN_RATIO = 16 / 9;
 const highlightMasks = [];
@@ -13,6 +14,7 @@ let sceneWidth;
 let sceneHeight;
 let activeScene;
 let activePopup;
+let adventurerPopup;;
 
 export function setSceneDimensions(app) {
   if (app.screen.width / app.screen.height > SCREEN_RATIO) {
@@ -68,8 +70,8 @@ export function startScene(app, { sceneKey }) {
     switch (sceneKey) {
       case Scenes.MainMenu:
         return MainMenuScene(app, sceneConfig);
-      case Scenes.Adventurers:
-        return createAdventurersScene(app, sceneConfig);
+      case Scenes.Lobby:
+        return LobbyScene(app, sceneConfig);
       case Scenes.Banners:
         createBannersScene(app, sceneConfig);
         break;
@@ -100,6 +102,15 @@ export function rerenderActiveScene(app) {
     }
     activePopup.popup.destroy({ children: true });
     startEventWindow(app, activePopup.type, activePopup.config);
+  }
+
+  if (adventurerPopup) {
+    app.stage.removeChild(adventurerPopup.popup);
+    if (adventurerPopup.cleaner) {
+      adventurerPopup.cleaner();
+    }
+    adventurerPopup.popup.destroy({ children: true });
+    startAdventurerWindow(app);
   }
 }
 
@@ -148,7 +159,7 @@ export function queueHighlightMask(targetContainer) {
   highlightMasks.push(targetContainer);
 }
 
-export function startEventWindow(app, eventType, eventConfig) {
+export function startEventWindow(app, eventType, eventConfig, next) {
   let popupLayer;
   let cleaner;
   if (eventType === "Event") {
@@ -156,11 +167,12 @@ export function startEventWindow(app, eventType, eventConfig) {
       app,
       { sceneWidth, sceneHeight },
       {
-        closeOnClickOutside: true,
+        closeOnClickOutside: false,
         onCloseHandler: () => {
           app.stage.removeChild(popupLayer);
           popupLayer.destroy({ children: true });
           activePopup = undefined
+          next();
         },
       },
       eventConfig
@@ -174,6 +186,7 @@ export function startEventWindow(app, eventType, eventConfig) {
         app.stage.removeChild(popupLayer);
         popupLayer.destroy({ children: true });
         activePopup = undefined
+        next();
       }
     );
   } else {
@@ -181,4 +194,24 @@ export function startEventWindow(app, eventType, eventConfig) {
   }
   app.stage.addChild(popupLayer);
   activePopup = { popup: popupLayer, type: eventType, config: eventConfig, cleaner: cleaner }
+}
+
+export function startAdventurerWindow(app) {
+  const [contentContainer, mountTicker, cleaner] = AdventurerWindow(
+    app,
+    { sceneWidth, sceneHeight },
+    () => {
+      app.stage.removeChild(contentContainer);
+      cleaner();
+      contentContainer.destroy({ children: true });
+      adventurerPopup = undefined;
+    }
+  );
+  contentContainer.position.set(
+    (app.screen.width - sceneWidth) / 2,
+    (app.screen.height - sceneHeight) / 2
+  )
+  app.stage.addChild(contentContainer);
+  app.ticker.add(mountTicker);
+  adventurerPopup = { popup: contentContainer, cleaner: cleaner };
 }

@@ -1,6 +1,6 @@
 import { Graphics, Text } from "pixi.js";
 import { createPixelButton } from "../components/Button.js";
-import { startEventWindow, startScene } from "../SceneManager.js";
+import { startAdventurerWindow, startEventWindow, startScene } from "../SceneManager.js";
 import { PopupWindows, Scenes } from "../enums.js";
 import gameStore from "../../../guild-react/src/store/gameStore";
 
@@ -17,16 +17,28 @@ export function MainMenuScene(app, { scene, sceneWidth, sceneHeight }) {
   text.anchor.set(0.5);
   scene.addChild(text);
 
+  const lobbyButton = createPixelButton(app, {
+    labelText: "Play",
+    width: sceneWidth / 8,
+    onClick: () => {
+      startScene(app, { sceneKey: Scenes.Lobby });
+    },
+  });
+  lobbyButton.position.set(
+    (sceneWidth - lobbyButton.width) / 2,
+    (sceneHeight * 70) / 100
+  );
+
   const adventurerButton = createPixelButton(app, {
     labelText: "Adventurers",
     width: sceneWidth / 8,
     onClick: () => {
-      startScene(app, { sceneKey: Scenes.Adventurers });
+      startAdventurerWindow(app);
     },
   });
   adventurerButton.position.set(
-    (sceneWidth - adventurerButton.width) / 2,
-    (sceneHeight * 70) / 100
+    sceneWidth / 2 + adventurerButton.width,
+    (sceneHeight * 80) / 100
   );
 
   const battleButton = createPixelButton(app, {
@@ -74,7 +86,6 @@ export function MainMenuScene(app, { scene, sceneWidth, sceneHeight }) {
       const event = gameStore.frCurrentEvent();
       console.log(event);
       startEventWindow(app, event.type, event.event);
-      // startPopupWindow(app, gameStore.activeEvent);
     }
   });
   triggerEventButton.position.set(
@@ -82,6 +93,7 @@ export function MainMenuScene(app, { scene, sceneWidth, sceneHeight }) {
     sceneHeight * 70 / 100
   );
 
+  scene.addChild(lobbyButton);
   scene.addChild(adventurerButton);
   scene.addChild(battleButton);
   scene.addChild(bannersButton);

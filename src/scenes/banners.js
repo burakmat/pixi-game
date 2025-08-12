@@ -9,7 +9,7 @@ export function createBannersScene(app, { scene, sceneWidth, sceneHeight }) {
     textureSrc: "pixelButton",
     width: sceneWidth / 8,
     onClick: () => {
-      startScene(app, { sceneKey: Scenes.MainMenu });
+      startScene(app, { sceneKey: Scenes.Lobby });
     },
   });
   backButton.position.set(sceneWidth / 20, sceneHeight / 10)
