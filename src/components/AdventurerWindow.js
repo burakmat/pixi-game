@@ -14,15 +14,6 @@ import { Container, Graphics } from "pixi.js";
 
 const BOOK_ASPECT_RATIO = 7 / 5;
 
-const adventurers = [
-  {
-    avatarSrc: "adventurer",
-  },
-  {
-    avatarSrc: "adventurer2",
-  },
-];
-
 const tabs = [];
 
 export function AdventurerWindow(
@@ -32,8 +23,8 @@ export function AdventurerWindow(
 )
 {
   let activeAdventurer = undefined;
-
   let activeTab = AdventurerDetailsTabs.Statistics;
+  let inventoryMode = true;
 
   const container = new Container();
 
@@ -45,6 +36,10 @@ export function AdventurerWindow(
   container.addChild(blocker);
 
   const innerContainer = new Container();
+
+  function setListMode(newMode) {
+    inventoryMode = newMode;
+  }
 
   function setActiveTab(newTab) {
     if (activeTab !== undefined) {
@@ -74,10 +69,15 @@ export function AdventurerWindow(
     if (activeAdventurer === undefined || activeAdventurer.id !== newAdventurer.id) {
       activeAdventurer = newAdventurer;
       appearance = Appearance(app, {
-        renderWidth: sceneWidth * 0.27,
-        renderHeight: sceneHeight * 0.6,
-        spriteSrc: "adventurer",
-      });
+          renderWidth: sceneWidth * 0.27,
+          renderHeight: sceneHeight * 0.6,
+        },
+        {
+          currentAdventurer: activeAdventurer,
+          owned: inventoryMode,
+          rerenderAdventurerList
+        }
+      );
       appearance.position.set(
         bookBackground.width * 0.55,
         sceneHeight * 0.18
@@ -132,6 +132,7 @@ export function AdventurerWindow(
     }
   }
 
+
   const bookBackground = createBookBackground(
     {
       renderWidth: sceneWidth * 0.70,
@@ -145,15 +146,32 @@ export function AdventurerWindow(
   );
   innerContainer.addChild(bookBackground);
   
-  const adventurerList = AdventurerList(app, {
+  let [adventurerList, adventureListCleaner] = AdventurerList(app, {
     renderWidth: sceneWidth * 0.25,
     renderHeight: sceneHeight * 0.755,
     setActiveAdventurer,
+    setMode: setListMode,
   });
   adventurerList.pivot.set(0, adventurerList.height / 2);
   adventurerList.position.set(sceneWidth * 0.69, sceneHeight * 0.49);
   adventurerList.zIndex = -1;
   innerContainer.addChild(adventurerList);
+
+  function rerenderAdventurerList() {
+    innerContainer.removeChild(adventurerList);
+    adventurerList.destroy({ children: true });
+    adventureListCleaner();
+    [adventurerList, adventureListCleaner] = AdventurerList(app, {
+      renderWidth: sceneWidth * 0.25,
+      renderHeight: sceneHeight * 0.755,
+      setActiveAdventurer,
+      setMode: setListMode,
+    });
+    adventurerList.pivot.set(0, adventurerList.height / 2);
+    adventurerList.position.set(sceneWidth * 0.69, sceneHeight * 0.49);
+    adventurerList.zIndex = -1;
+    innerContainer.addChild(adventurerList);
+  }
   
   
   

@@ -35,9 +35,9 @@ export function LobbyScene(app, { scene, sceneWidth, sceneHeight }) {
   }
 
   function triggerEvents() {
-    const event = BackToFront.getCurrentEvent();
+    const event = BackToFront.getCurrentEvent().data;
     if (event) {
-      startEventWindow(app, event.currentEvent.type, event.currentEvent.event, triggerEvents);
+      startEventWindow(app, event.type, event.event, triggerEvents);
     }
   }
 
@@ -126,7 +126,7 @@ export function LobbyScene(app, { scene, sceneWidth, sceneHeight }) {
   dayLabel.position.set(dayIndicator.width * 0.5, dayIndicator.height * 0.05);
   dayIndicator.addChild(dayLabel);
   const day = new Text({
-    text: BackToFront.getMainMenuData().turn,
+    text: BackToFront.getMainMenuData().data.turn,
     style: {
       fontSize: sceneHeight * 0.08,
       fill: "#ffffff",
@@ -156,7 +156,7 @@ export function LobbyScene(app, { scene, sceneWidth, sceneHeight }) {
   moneyLabel.position.set(moneyIndicator.width * 0.5, moneyIndicator.height * 0.05);
   moneyIndicator.addChild(moneyLabel);
   const money = new Text({
-    text: BackToFront.getMainMenuData().money,
+    text: BackToFront.getMainMenuData().data.money,
     style: {
       fontSize: sceneHeight * 0.08,
       fill: "#ffffff",
@@ -186,7 +186,7 @@ export function LobbyScene(app, { scene, sceneWidth, sceneHeight }) {
   levelLabel.position.set(levelIndicator.width * 0.5, levelIndicator.height * 0.05);
   levelIndicator.addChild(levelLabel);
   const level = new Text({
-    text: BackToFront.getMainMenuData().level,
+    text: BackToFront.getMainMenuData().data.level,
     style: {
       fontSize: sceneHeight * 0.08,
       fill: "#ffffff",
@@ -216,7 +216,7 @@ export function LobbyScene(app, { scene, sceneWidth, sceneHeight }) {
   reputationLabel.position.set(reputationIndicator.width * 0.5, reputationIndicator.height * 0.05);
   reputationIndicator.addChild(reputationLabel);
   const reputation = new Text({
-    text: BackToFront.getMainMenuData().reputation,
+    text: BackToFront.getMainMenuData().data.reputation,
     style: {
       fontSize: sceneHeight * 0.08,
       fill: "#ffffff",

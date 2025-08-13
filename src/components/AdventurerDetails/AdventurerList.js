@@ -9,14 +9,17 @@ import { markerColor } from "../../colors";
 import BackToFront from "../../../../guild-react/src/backToFront";
 import { AdventurerListMode } from "../../enums";
 
-export function AdventurerList(app, {renderWidth, renderHeight, setActiveAdventurer}) {
+export function AdventurerList(app, { renderWidth, renderHeight, setActiveAdventurer, setMode }) {
   const gap = (renderHeight * 1) / 20;
   const height = (renderHeight * 3) / 20;
-  const banners = [];
+  const inventoryBanners = [];
+  const marketBanners = [];
+  let banners = inventoryBanners;
   let currentPage = 1;
-  const adventurers = BackToFront.getAdventurers().data;
-  console.log("adventurers:", adventurers);
-  const maxNumberPage = Math.ceil(adventurers.length / 4);
+  const inventoryAdventurers = BackToFront.getAdventurers().data;
+  const marketAdventurers = BackToFront.getBuyableAdventurers().data;
+  let adventurers = inventoryAdventurers;
+  let maxNumberPage = Math.ceil(adventurers.length / 4);
 
   const container = new Container();
 
@@ -30,7 +33,7 @@ export function AdventurerList(app, {renderWidth, renderHeight, setActiveAdventu
     } else {
       currentPage -= 1;
     }
-    updateBanners()
+    updateBanners();
   }
 
   function pageDown() {
@@ -43,9 +46,12 @@ export function AdventurerList(app, {renderWidth, renderHeight, setActiveAdventu
   }
 
   function updateBanners() {
-    banners.forEach((banner) => {
+    inventoryBanners.forEach((banner) => {
       container.removeChild(banner);
-    })
+    });
+    marketBanners.forEach((banner) => {
+      container.removeChild(banner);
+    });
     for (let i = 0; i < 4; ++i) {
       const index = (currentPage - 1) * 4 + i;
       if (index < adventurers.length) {
@@ -66,15 +72,27 @@ export function AdventurerList(app, {renderWidth, renderHeight, setActiveAdventu
       markerPicked = marker1;
       markerLeft = marker2;
       currentListMode = AdventurerListMode.Inventory;
+      adventurers = inventoryAdventurers;
+      banners = inventoryBanners;
+      setMode(true);
     } else if (newMode === AdventurerListMode.Market) {
       markerPicked = marker2;
       markerLeft = marker1;
       currentListMode = AdventurerListMode.Market;
+      adventurers = marketAdventurers;
+      banners = marketBanners;
+      setMode(false);
     }
     markerPicked.texture = markerBTexture;
     markerLeft.texture = markerATexture;
     markerPicked.position.set(renderWidth - markerPicked.width * 1 / 3, renderHeight * 0.5);
     markerLeft.position.set(renderWidth, renderHeight * 0.5);
+    maxNumberPage = Math.ceil(adventurers.length / 4);
+    currentPage = 1;
+    updateBanners();
+    if (adventurers.length > 0) {
+      setActiveAdventurer(adventurers[0]);
+    }
   }
 
   const markerATexture = Texture.from("marker2a");
@@ -82,24 +100,44 @@ export function AdventurerList(app, {renderWidth, renderHeight, setActiveAdventu
   const markerBTexture = Texture.from("marker2b");
   markerBTexture.source.scaleMode = 'nearest'
 
-  for (let i = 0; i < adventurers.length; ++i) {
+  for (let i = 0; i < inventoryAdventurers.length; ++i) {
     const banner = new AdventurerBanner(app, {
       bannerWidth: (renderWidth * 3) / 4,
       bannerHeight: (renderHeight * 3) / 20,
       avatarSrc: "lule",
-      name: adventurers[i].name,
-      level: adventurers[i].level,
-      str: adventurers[i].stats.Strength,
-      int: adventurers[i].stats.Intelligence,
-      dex: adventurers[i].stats.Dexterity,
-      fth: adventurers[i].stats.Faith,
-      race: adventurers[i].race,
-      _class: adventurers[i].class
+      name: inventoryAdventurers[i].name,
+      level: inventoryAdventurers[i].level,
+      str: inventoryAdventurers[i].stats.Strength,
+      int: inventoryAdventurers[i].stats.Intelligence,
+      dex: inventoryAdventurers[i].stats.Dexterity,
+      fth: inventoryAdventurers[i].stats.Faith,
+      race: inventoryAdventurers[i].race,
+      _class: inventoryAdventurers[i].class
     });
     banner.on("click", () => {
-      setActiveAdventurer(adventurers[i]);
+      setActiveAdventurer(inventoryAdventurers[i]);
     })
-    banners.push(banner);
+    inventoryBanners.push(banner);
+  }
+
+  for (let i = 0; i < marketAdventurers.length; ++i) {
+    const banner = new AdventurerBanner(app, {
+      bannerWidth: (renderWidth * 3) / 4,
+      bannerHeight: (renderHeight * 3) / 20,
+      avatarSrc: "lule",
+      name: marketAdventurers[i].name,
+      level: marketAdventurers[i].level,
+      str: marketAdventurers[i].stats.Strength,
+      int: marketAdventurers[i].stats.Intelligence,
+      dex: marketAdventurers[i].stats.Dexterity,
+      fth: marketAdventurers[i].stats.Faith,
+      race: marketAdventurers[i].race,
+      _class: marketAdventurers[i].class
+    });
+    banner.on("click", () => {
+      setActiveAdventurer(marketAdventurers[i]);
+    })
+    marketBanners.push(banner);
   }
 
   const arrowTexture = Texture.from("downArrow");
@@ -160,5 +198,12 @@ export function AdventurerList(app, {renderWidth, renderHeight, setActiveAdventu
   if (adventurers.length > 0) {
     setActiveAdventurer(adventurers[0])
   }
-  return container;
+  return [container, () => {
+    inventoryBanners.forEach((banner) => {
+      banner.destroy({ children: true });
+    });
+    marketBanners.forEach((banner) => {
+      banner.destroy({ children: true });
+    });
+  }];
 }
